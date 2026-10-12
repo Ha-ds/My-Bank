@@ -59,7 +59,7 @@ public class ClientService {
     private void fromDtoToClient(ClientDto clientDto, Client client) {
         client.setName(clientDto.name());
         client.setIban(clientDto.iban());
-        client.getAccount(AccountType.CURRENT).setBalance(clientDto.amount());
+        client.getAccount(AccountType.CURRENT).setBalance(clientDto.balance());
     }
 
     /**
