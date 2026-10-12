@@ -6,6 +6,6 @@ public record ClientDto(
         String clientId,
         String name,
         String iban,
-        BigDecimal amount
+        BigDecimal balance
 ) {
 }
