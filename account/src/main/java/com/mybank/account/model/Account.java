@@ -11,7 +11,7 @@ public class Account {
 
     AccountType accountType;
 
-    BigDecimal amount = BigDecimal.valueOf(0);
+    BigDecimal balance = BigDecimal.valueOf(0);
 
     public Account(AccountType accountType) {
         this.accountType = accountType;
