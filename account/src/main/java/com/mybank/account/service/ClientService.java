@@ -59,7 +59,7 @@ public class ClientService {
     private void fromDtoToClient(ClientDto clientDto, Client client) {
         client.setName(clientDto.name());
         client.setIban(clientDto.iban());
-        client.getAccount(AccountType.CURRENT).setAmount(clientDto.amount());
+        client.getAccount(AccountType.CURRENT).setBalance(clientDto.balance());
     }
 
     /**
@@ -70,7 +70,7 @@ public class ClientService {
                 client.getClientId(),
                 client.getName(),
                 client.getIban(),
-                client.getAccount(AccountType.CURRENT).getAmount()
+                client.getAccount(AccountType.CURRENT).getBalance()
         );
         return clientDto;
     }
