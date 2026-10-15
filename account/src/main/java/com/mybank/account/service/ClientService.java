@@ -1,12 +1,15 @@
 package com.mybank.account.service;
 
 import com.mybank.account.dto.ClientDto;
+import com.mybank.account.exception.ClientBalanceCannotBeNegativeException;
 import com.mybank.account.model.AccountType;
 import com.mybank.account.model.Client;
 import com.mybank.account.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.math.BigDecimal;
 
 @Service
 @Slf4j
@@ -46,6 +49,13 @@ public class ClientService {
      * - after modification client is saved back to the database
      */
     public void updateClient(ClientDto clientDto) {
+
+        if (clientDto.balance().intValue() < 0) {
+
+            log.error("Client: Client with id {} failed to update balance with negative value", clientDto.clientId());
+            throw new ClientBalanceCannotBeNegativeException("Client balance cannot be negative.");
+        }
+
         log.info("Client: Updating client with given data: {} ", clientDto);
         Client client = clientRepository.getClientById(clientDto.clientId());
         fromDtoToClient(clientDto, client);
