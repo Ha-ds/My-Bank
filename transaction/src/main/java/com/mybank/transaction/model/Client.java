@@ -4,8 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
 @Setter
 @Getter
@@ -13,5 +12,7 @@ import java.util.List;
 public class Client {
 
     String clientId;
+    String name;
     String iban;
+    BigDecimal balance;
 }
