@@ -1,6 +1,6 @@
 package com.mybank.transaction.external;
 
-import com.mybank.transaction.model.Client;
+import com.mybank.transaction.model.ClientDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,20 +11,25 @@ import org.springframework.web.client.RestTemplate;
 @Slf4j
 public class AccountMicroservice {
 
-    RestTemplate restTemplate;
+    private final RestTemplate restTemplate;
 
-    public Client getClientByIban(String clientIban) {
-        log.info("Account: Getting client by iban {}", clientIban);
+    public ClientDto getClientByIban(String iban) {
+        try{
+        log.info("Account: Getting client by iban {}", iban);
         return restTemplate.getForEntity(
-                        "localhost:8080/account/get-client/" + clientIban,
-                        Client.class)
+                        "http://localhost:8080/account/get-client/" + iban,
+                        ClientDto.class)
                 .getBody();
+        } catch (Exception exception){
+            log.error("GetClient: Exception with cause: {}", exception.getMessage());
+            throw new RuntimeException();
+        }
     }
 
-    public void updateClientByIban(Client client) {
-        log.info("Account: Updating client by iban {}", client.getIban());
-        restTemplate.postForEntity(
-                "localhost:8080/account/update-client", client, Client.class);
+    public void updateClientByIban(ClientDto clientDto) {
+        log.info("Account: Updating client by iban {}", clientDto.getIban());
+        restTemplate.put(
+                "http://localhost:8080/account/update-client", clientDto, ClientDto.class);
 
     }
 }

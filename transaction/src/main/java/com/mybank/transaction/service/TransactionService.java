@@ -1,5 +1,6 @@
 package com.mybank.transaction.service;
 
+import com.mybank.transaction.dto.TransactionDto;
 import com.mybank.transaction.dto.TransferDto;
 import com.mybank.transaction.exception.ClientBalanceCannotBeNegativeException;
 import com.mybank.transaction.external.AccountMicroservice;
@@ -19,20 +20,20 @@ public class TransactionService {
 
     private final AccountMicroservice accountMicroservice;
 
-    public void transfer(TransferDto transferDto) {
+    public TransactionDto transfer(TransferDto transferDto) {
         log.info("Transfer: Beginning transfer: {}", transferDto);
-        Client sourceClient = accountMicroservice.getClientByIban(transferDto.sourceClientIban());
-        Client targetClient = accountMicroservice.getClientByIban(transferDto.targetClientIban());
+        ClientDto sourceClientDto = accountMicroservice.getClientByIban(transferDto.sourceClientIban());
+        ClientDto targetClientDto = accountMicroservice.getClientByIban(transferDto.targetClientIban());
 
-       BigDecimal newSourceBalance = sourceClient.getBalance().subtract(transferDto.amount());
+       BigDecimal newSourceBalance = sourceClientDto.getBalance().subtract(transferDto.amount());
        validateIfBalanceIsStillPositive(newSourceBalance, transferDto);
-       BigDecimal newTargetBalance = targetClient.getBalance().add(transferDto.amount());
+       BigDecimal newTargetBalance = targetClientDto.getBalance().add(transferDto.amount());
 
-       sourceClient.setBalance(newSourceBalance);
-       targetClient.setBalance(newTargetBalance);
+       sourceClientDto.setBalance(newSourceBalance);
+       targetClientDto.setBalance(newTargetBalance);
 
-       accountMicroservice.updateClientByIban(sourceClient);
-       accountMicroservice.updateClientByIban(targetClient);
+       accountMicroservice.updateClientByIban(sourceClientDto);
+       accountMicroservice.updateClientByIban(targetClientDto);
 
        Transaction transfer = new Transfer(
                TransactionType.TRANSFER,
@@ -43,6 +44,7 @@ public class TransactionService {
 
        transactionRepository.save(transfer);
        log.info("Transfer: Transfer completed successfully");
+       return new TransactionDto(transfer, sourceClientDto, targetClientDto);
     }
 
    private void validateIfBalanceIsStillPositive(BigDecimal newSourceBalance, TransferDto transferDto) {

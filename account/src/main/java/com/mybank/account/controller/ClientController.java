@@ -18,9 +18,9 @@ public class ClientController {
         clientService.createClient(client);
     }
 
-    @GetMapping("/get-client/{clientId}")
-    public ClientDto getClientById(@PathVariable String clientId) {
-      return clientService.getClientById(clientId);
+    @GetMapping("/get-client/{iban}")
+    public ClientDto getClientByIban(@PathVariable String iban) {
+      return clientService.getClientByIban(iban);
     }
 
     @PutMapping("/update-client")

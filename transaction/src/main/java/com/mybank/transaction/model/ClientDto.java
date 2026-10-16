@@ -9,9 +9,8 @@ import java.math.BigDecimal;
 @Setter
 @Getter
 @Data
-public class Client {
+public class ClientDto {
 
-    String clientId;
     String name;
     String iban;
     BigDecimal balance;
