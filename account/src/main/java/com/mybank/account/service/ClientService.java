@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -22,23 +20,23 @@ public class ClientService {
      * This method is responsible for creating a new client within the banking system
      */
     public void createClient(Client client) {
-        log.info("Client: Creating new client with id: {}", client.getClientId());
+        log.info("Create: Creating new client with id: {}", client.getClientId());
         Client newClient = new Client(client.getClientId(), client.getName(), client.getIban(), client.getPassword());
         clientRepository.getClients().add(newClient);
-        log.info("Client: New client created");
+        log.info("Create: New client created");
     }
 
     /**
      * This method gets a client
-     * - the user gives the client id as an input
-     * - this client id is used by the repository to find the correct client
+     * - the user gives the client iban as an input
+     * - this client iban is used by the repository to find the correct client
      * - the client is converted to a ClientDto before sending it as a response
      */
-    public ClientDto getClientById(String clientId) {
-        log.info("Client: Getting client by id: {}",  clientId);
-       Client client = clientRepository.getClientById(clientId);
+    public ClientDto getClientByIban(String iban) {
+        log.info("GetClient: Getting client by iban: {}",  iban);
+       Client client = clientRepository.getClientByIban(iban);
         ClientDto clientDto = fromClientEntityToDto(client);
-        log.info("Client: ClientDto returned successfully");
+        log.info("GetClient: ClientDto returned successfully");
         return clientDto;
     }
 
@@ -52,12 +50,12 @@ public class ClientService {
 
         if (clientDto.balance().intValue() < 0) {
 
-            log.error("Client: Client with id {} failed to update balance with negative value", clientDto.clientId());
+            log.error("Update: Client with iban {} failed to update balance with negative value", clientDto.iban());
             throw new ClientBalanceCannotBeNegativeException("Client balance cannot be negative.");
         }
 
-        log.info("Client: Updating client with given data: {} ", clientDto);
-        Client client = clientRepository.getClientById(clientDto.clientId());
+        log.info("Update: Updating client with given data: {} ", clientDto);
+        Client client = clientRepository.getClientByIban(clientDto.iban());
         fromDtoToClient(clientDto, client);
         clientRepository.updateClient(client);
         log.info("Client: Client updated");
@@ -76,12 +74,10 @@ public class ClientService {
      * This is a helper method to convert client to ClientDto
      */
     private ClientDto fromClientEntityToDto(Client client) {
-        ClientDto clientDto = new ClientDto(
-                client.getClientId(),
+        return new ClientDto(
                 client.getName(),
                 client.getIban(),
                 client.getAccount(AccountType.CURRENT).getBalance()
         );
-        return clientDto;
     }
 }

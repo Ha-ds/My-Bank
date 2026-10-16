@@ -1,6 +1,8 @@
 package com.mybank.transaction.controller;
 
+import com.mybank.transaction.dto.TransactionDto;
 import com.mybank.transaction.dto.TransferDto;
+import com.mybank.transaction.model.Transaction;
 import com.mybank.transaction.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,8 +18,8 @@ public class TransactionController {
     private final TransactionService transactionService;
 
     @PostMapping("/transfer")
-    public void transfer(@RequestBody TransferDto transferDto) {
-        transactionService.transfer(transferDto);
+    public TransactionDto transfer(@RequestBody TransferDto transferDto) {
+       return transactionService.transfer(transferDto);
 
     }
 }
