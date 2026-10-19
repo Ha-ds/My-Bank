@@ -1,0 +1,66 @@
+<section class="card">
+  <div class="card-header">
+    <h2>Clients</h2>
+    <button class="btn-primary" (click)="showDialog.set(true)">+ New Client</button>
+  </div>
+
+  @if (error()) {
+    <p class="error">{{ error() }}</p>
+  }
+
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>IBAN</th>
+        <th class="right">Balance</th>
+        <th class="chevron-col"></th>
+      </tr>
+    </thead>
+    <tbody>
+      @if (loading()) {
+        <tr><td colspan="4" class="muted">Loading…</td></tr>
+      } @else {
+        @for (client of clients(); track client.iban) {
+          @let open = expandedIban() === client.iban;
+          <tr class="client-row" [class.open]="open" (click)="toggleClient(client.iban)">
+            <td>{{ client.name }}</td>
+            <td class="mono">{{ client.iban }}</td>
+            <td class="right">{{ client.balance | currency: 'EUR' }}</td>
+            <td class="chevron-col"><span class="chevron">▾</span></td>
+          </tr>
+          <tr class="details-row">
+            <td colspan="4">
+              <div class="slide" [class.open]="open">
+                <div class="slide-inner">
+                  <table class="accounts">
+                    <thead>
+                      <tr>
+                        <th>Account Name</th>
+                        <th class="right">Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (account of accountsOf(client); track account.accountType) {
+                        <tr>
+                          <td>{{ account.accountType }}</td>
+                          <td class="right">{{ account.balance | currency: 'EUR' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="4" class="muted">No clients yet.</td></tr>
+        }
+      }
+    </tbody>
+  </table>
+</section>
+
+@if (showDialog()) {
+  <app-create-client-dialog (closed)="showDialog.set(false)" (created)="onClientCreated()" />
+}

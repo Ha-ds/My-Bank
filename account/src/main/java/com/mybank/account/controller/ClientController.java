@@ -6,6 +6,7 @@ import com.mybank.account.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "http://localhost:4200")
 @RestController
 @RequestMapping("/account")
 @RequiredArgsConstructor
