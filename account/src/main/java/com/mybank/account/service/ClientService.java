@@ -1,6 +1,7 @@
 package com.mybank.account.service;
 
 import com.mybank.account.dto.ClientDto;
+import com.mybank.account.dto.FullClientDto;
 import com.mybank.account.exception.ClientBalanceCannotBeNegativeException;
 import com.mybank.account.model.AccountType;
 import com.mybank.account.model.Client;
@@ -8,6 +9,9 @@ import com.mybank.account.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -59,6 +63,26 @@ public class ClientService {
         fromDtoToClient(clientDto, client);
         clientRepository.updateClient(client);
         log.info("Client: Client updated");
+    }
+
+    public List<FullClientDto> getAllClients() {
+        log.info("GetAll: Getting all clients");
+        List<Client> clients  = clientRepository.getClients();
+        List<FullClientDto> fullClientDtos = new ArrayList<>();
+
+        for(Client client : clients) {
+            fullClientDtos.add(fromClientEntityToFullClientDto(client));
+        }
+        return fullClientDtos;
+    }
+
+    private FullClientDto fromClientEntityToFullClientDto(Client client) {
+        return new FullClientDto(
+                client.getName(),
+                client.getIban(),
+                client.getAccount(AccountType.CURRENT).getBalance(),
+                client.getAccounts()
+        );
     }
 
     /**

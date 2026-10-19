@@ -1,10 +1,13 @@
 package com.mybank.account.controller;
 
 import com.mybank.account.dto.ClientDto;
+import com.mybank.account.dto.FullClientDto;
 import com.mybank.account.model.Client;
 import com.mybank.account.service.ClientService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin(origins = "http://localhost:4200")
 @RestController
@@ -27,5 +30,10 @@ public class ClientController {
     @PutMapping("/update-client")
     public void updateClient(@RequestBody ClientDto clientDto) {
         clientService.updateClient(clientDto);
+    }
+
+    @GetMapping("/get-all-clients")
+    public List<FullClientDto> getAllClients(){
+        return clientService.getAllClients();
     }
 }
