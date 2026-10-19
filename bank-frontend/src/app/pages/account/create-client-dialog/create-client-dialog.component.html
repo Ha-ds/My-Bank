@@ -1,0 +1,38 @@
+<div class="backdrop" (click)="close()">
+  <div class="dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <div class="dialog-header">
+      <h3>New Client</h3>
+      <button class="icon-btn" type="button" (click)="close()" aria-label="Close">✕</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Client ID
+        <input formControlName="clientId" />
+      </label>
+      <label>
+        Name
+        <input formControlName="name" />
+      </label>
+      <label>
+        IBAN
+        <input formControlName="iban" />
+      </label>
+      <label>
+        Password
+        <input formControlName="password" type="password" />
+      </label>
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <div class="actions">
+        <button class="btn-secondary" type="button" (click)="close()">Cancel</button>
+        <button class="btn-primary" type="submit" [disabled]="saving()">
+          {{ saving() ? 'Saving…' : 'Create' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

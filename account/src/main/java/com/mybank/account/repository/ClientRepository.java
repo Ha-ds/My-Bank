@@ -16,15 +16,15 @@ public class ClientRepository {
     private final List<Client> clients = new ArrayList<>();
 
     /**
-     * This method searches client within the clients' list by given client id as input
+     * This method searches client within the clients' list by given client iban as input
      */
-    public Client getClientById(String clientId) {
+    public Client getClientByIban(String iban) {
         for (Client client : clients) {
-            if (client.getClientId().equals(clientId)) {
+            if (client.getIban().equals(iban)) {
                 return client;
             }
         }
-        log.error("Client: Get client with id {} does not exist", clientId);
+        log.error("GetClient: Get client with iban {} does not exist", iban);
         throw new RuntimeException("Client does not exist.");
     }
 
@@ -33,12 +33,12 @@ public class ClientRepository {
      */
     public void updateClient(Client client) {
         for(int i = 0; i < clients.size(); i++) {
-            if (clients.get(i).getClientId().equals(client.getClientId())) {
+            if (clients.get(i).getIban().equals(client.getIban())) {
                 clients.set(i, client);
                 return;
             }
         }
-        log.error("Client: Update client with id {} does not exist", client.getClientId());
+        log.error("Update: Update client with iban {} does not exist", client.getIban());
         throw new RuntimeException("Client does not exist.");
     }
 }

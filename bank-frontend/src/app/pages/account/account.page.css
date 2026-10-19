@@ -1,0 +1,110 @@
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+h2 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 600;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th {
+  text-align: left;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+  padding: 10px 12px;
+  border-bottom: 2px solid var(--purple-soft);
+}
+
+td {
+  padding: 12px;
+  border-bottom: 1px solid var(--border);
+}
+
+.client-row {
+  cursor: pointer;
+}
+
+.client-row:hover,
+.client-row.open {
+  background: #faf8ff;
+}
+
+.client-row.open td {
+  border-bottom-color: transparent;
+}
+
+.chevron-col {
+  width: 40px;
+  text-align: center;
+}
+
+.chevron {
+  display: inline-block;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+}
+
+.client-row.open .chevron {
+  transform: rotate(180deg);
+  color: var(--purple);
+}
+
+/* Slide-down: animate grid row from 0fr to 1fr */
+.details-row td {
+  padding: 0;
+  border-bottom: none;
+}
+
+.slide {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.25s ease;
+}
+
+.slide.open {
+  grid-template-rows: 1fr;
+  border-bottom: 1px solid var(--border);
+}
+
+.slide-inner {
+  overflow: hidden;
+}
+
+.accounts {
+  margin: 4px 0 16px;
+  background: var(--purple-soft);
+  border-radius: 8px;
+}
+
+.accounts th {
+  border-bottom: 1px solid #e4dcfb;
+  padding: 8px 24px;
+}
+
+.accounts td {
+  padding: 10px 24px;
+  border-bottom: none;
+}
+
+.right { text-align: right; }
+.mono { font-family: ui-monospace, monospace; font-size: 13px; }
+.muted { color: var(--muted); text-align: center; }
+.error { color: #dc2626; margin: 0 0 12px; }
