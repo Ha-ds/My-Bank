@@ -11,8 +11,8 @@ export class AccountService {
   private readonly baseUrl = 'http://localhost:8080/account';
 
   getAllClients(): Observable<ClientDto[]> {
-    // return this.http.get<ClientDto[]>(`${this.baseUrl}/get-all-clients`);
-    return of(MOCK_CLIENTS).pipe(delay(300));
+    return this.http.get<ClientDto[]>(`${this.baseUrl}/get-all-clients`);
+    //return of(MOCK_CLIENTS).pipe(delay(300));
   }
 
   getClientByIban(iban: string): Observable<ClientDto> {
