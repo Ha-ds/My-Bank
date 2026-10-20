@@ -9,6 +9,7 @@ public record FullClientDto(
         String name,
         String iban,
         BigDecimal balance,
-        List<Account> accounts
+        List<Account> accounts,
+        String email
 ) {
 }
