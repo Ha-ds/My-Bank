@@ -3,6 +3,7 @@ package com.mybank.account.service;
 import com.mybank.account.dto.ClientDto;
 import com.mybank.account.dto.FullClientDto;
 import com.mybank.account.exception.ClientBalanceCannotBeNegativeException;
+import com.mybank.account.exception.ClientCannotBeNullException;
 import com.mybank.account.model.AccountType;
 import com.mybank.account.model.Client;
 import com.mybank.account.repository.ClientRepository;
@@ -24,6 +25,11 @@ public class ClientService {
      * This method is responsible for creating a new client within the banking system
      */
     public void createClient(Client client) {
+
+        if(client == null) {
+            log.error("Create: Client with input null failed to be created");
+            throw new ClientCannotBeNullException("Client cannot be null.");
+        }
         log.info("Create: Creating new client with id: {}", client.getClientId());
         Client newClient = new Client(client.getName(), client.getPassword(), client.getEmail());
         clientRepository.getClients().add(newClient);
