@@ -25,7 +25,7 @@ public class ClientService {
      */
     public void createClient(Client client) {
         log.info("Create: Creating new client with id: {}", client.getClientId());
-        Client newClient = new Client(client.getClientId(), client.getName(), client.getIban(), client.getPassword());
+        Client newClient = new Client(client.getName(), client.getPassword(), client.getEmail());
         clientRepository.getClients().add(newClient);
         log.info("Create: New client created");
     }
@@ -81,7 +81,8 @@ public class ClientService {
                 client.getName(),
                 client.getIban(),
                 client.getAccount(AccountType.CURRENT).getBalance(),
-                client.getAccounts()
+                client.getAccounts(),
+                client.getEmail()
         );
     }
 
@@ -92,6 +93,7 @@ public class ClientService {
         client.setName(clientDto.name());
         client.setIban(clientDto.iban());
         client.getAccount(AccountType.CURRENT).setBalance(clientDto.balance());
+        client.setEmail(clientDto.email());
     }
 
     /**
@@ -101,7 +103,8 @@ public class ClientService {
         return new ClientDto(
                 client.getName(),
                 client.getIban(),
-                client.getAccount(AccountType.CURRENT).getBalance()
+                client.getAccount(AccountType.CURRENT).getBalance(),
+                client.getEmail()
         );
     }
 }
