@@ -7,20 +7,16 @@
 
     <form [formGroup]="form" (ngSubmit)="submit()">
       <label>
-        Client ID
-        <input formControlName="clientId" />
-      </label>
-      <label>
         Name
         <input formControlName="name" />
       </label>
       <label>
-        IBAN
-        <input formControlName="iban" />
-      </label>
-      <label>
         Password
         <input formControlName="password" type="password" />
+      </label>
+      <label>
+        Email
+        <input formControlName="email" />
       </label>
 
       @if (error()) {

@@ -1,5 +1,7 @@
 export type AccountType = 'CURRENT' | 'SAVINGS' | 'INVESTMENT' | 'CREDIT';
 
+export const ACCOUNT_TYPES: AccountType[] = ['CURRENT', 'SAVINGS', 'INVESTMENT', 'CREDIT'];
+
 export interface AccountDto {
   accountType: AccountType;
   balance: number;
@@ -10,11 +12,11 @@ export interface ClientDto {
   iban: string;
   balance: number;
   accounts?: AccountDto[];
+  email: string;
 }
 
 export interface CreateClientRequest {
-  clientId: string;
   name: string;
-  iban: string;
   password: string;
+  email: string;
 }

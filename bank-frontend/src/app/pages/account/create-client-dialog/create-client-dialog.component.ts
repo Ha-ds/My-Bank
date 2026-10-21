@@ -19,10 +19,9 @@ export class CreateClientDialogComponent {
   readonly error = signal<string | null>(null);
 
   readonly form = this.fb.nonNullable.group({
-    clientId: ['', Validators.required],
     name: ['', Validators.required],
-    iban: ['', Validators.required],
     password: ['', Validators.required],
+    email: ['', Validators.required]
   });
 
   submit(): void {

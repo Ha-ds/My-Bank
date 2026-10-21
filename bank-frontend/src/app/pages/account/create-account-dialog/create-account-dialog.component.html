@@ -1,0 +1,40 @@
+<div class="backdrop" (click)="close()">
+  <div class="dialog" (click)="$event.stopPropagation()" role="dialog" aria-modal="true">
+    <div class="dialog-header">
+      <h3>New Account</h3>
+      <button class="icon-btn" type="button" (click)="close()" aria-label="Close">✕</button>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <label>
+        Client
+        <input [value]="client().name + ' · ' + client().iban" disabled />
+      </label>
+
+      @if (availableTypes().length) {
+      <label>
+        Account Type
+        <select formControlName="accountType">
+          <option value="" disabled>Select type</option>
+          @for (type of availableTypes(); track type) {
+          <option [value]="type">{{ type }}</option>
+          }
+        </select>
+      </label>
+      } @else {
+      <p class="error">This client already has every account type.</p>
+      }
+
+      @if (error()) {
+      <p class="error">{{ error() }}</p>
+      }
+
+      <div class="actions">
+        <button class="btn-secondary" type="button" (click)="close()">Cancel</button>
+        <button class="btn-primary" type="submit" [disabled]="saving() || !availableTypes().length">
+          {{ saving() ? 'Saving…' : 'Create' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
