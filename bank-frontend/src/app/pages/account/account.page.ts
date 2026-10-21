@@ -1,12 +1,13 @@
 import { CurrencyPipe } from '@angular/common';
-import { Component, OnInit, inject, signal } from '@angular/core';
+import { Component, OnInit, computed, inject, signal } from '@angular/core';
 import { AccountService } from '../../services/account/account.service';
 import { AccountDto, ClientDto } from '../../models/account/client.model';
 import { CreateClientDialogComponent } from './create-client-dialog/create-client-dialog.component';
+import { CreateAccountDialogComponent } from './create-account-dialog/create-account-dialog.component';
 
 @Component({
   selector: 'app-account-page',
-  imports: [CurrencyPipe, CreateClientDialogComponent],
+  imports: [CurrencyPipe, CreateClientDialogComponent, CreateAccountDialogComponent],
   templateUrl: './account.page.html',
   styleUrl: './account.page.css',
 })
@@ -18,6 +19,7 @@ export class AccountPage implements OnInit {
   readonly error = signal<string | null>(null);
   readonly showDialog = signal(false);
   readonly expandedIban = signal<string | null>(null);
+  readonly showAccountDialog = signal(false);
 
   ngOnInit(): void {
     this.loadClients();
@@ -38,6 +40,10 @@ export class AccountPage implements OnInit {
     });
   }
 
+  readonly selectedClient = computed(
+    () => this.clients().find((c) => c.iban === this.expandedIban()) ?? null,
+  );
+
   toggleClient(iban: string): void {
     this.expandedIban.update((current) => (current === iban ? null : iban));
   }
@@ -50,6 +56,11 @@ export class AccountPage implements OnInit {
 
   onClientCreated(): void {
     this.showDialog.set(false);
+    this.loadClients();
+  }
+
+  onAccountCreated(): void {
+    this.showAccountDialog.set(false);
     this.loadClients();
   }
 }
