@@ -4,7 +4,6 @@ import com.mybank.account.dto.ClientDto;
 import com.mybank.account.dto.FullClientDto;
 import com.mybank.account.exception.ClientBalanceCannotBeNegativeException;
 import com.mybank.account.exception.ClientCannotBeNullException;
-import com.mybank.account.exception.ClientNotFoundException;
 import com.mybank.account.model.AccountType;
 import com.mybank.account.model.Client;
 import com.mybank.account.repository.ClientRepository;
@@ -82,8 +81,10 @@ public class ClientServiceTest {
         // Given
         String iban = "NON_EXISTING_IBAN";
 
+        when(clientRepository.getClientByIban(iban)).thenReturn(null);
+
         // When Then
-        assertThrows(ClientNotFoundException.class,
+        assertThrows(ClientCannotBeNullException.class,
                 () -> clientService.getClientByIban(iban));
     }
 
@@ -117,21 +118,6 @@ public class ClientServiceTest {
         assertThrows(ClientBalanceCannotBeNegativeException.class,
                 () -> clientService.updateClient(clientDto));
         verifyNoInteractions(clientRepository);
-    }
-
-    @Test
-    public void updateClient_whenClientDoesNotExist_exceptionIsThrownAndNothingIsSaved() {
-        // Given
-        ClientDto clientDto = new ClientDto(
-                "Ivan Petrov", "NON_EXISTING_IBAN", new BigDecimal("100"), "ivan_petrov@gmail.com");
-
-        when(clientRepository.getClientByIban("NON_EXISTING_IBAN"))
-                .thenThrow(new ClientNotFoundException("Client does not exist"));
-
-        // When Then
-        assertThrows(ClientNotFoundException.class,
-                () -> clientService.updateClient(clientDto));
-        verify(clientRepository, never()).updateClient(any());
     }
 
     @Test

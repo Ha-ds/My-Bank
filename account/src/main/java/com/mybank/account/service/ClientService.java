@@ -45,7 +45,10 @@ public class ClientService {
     public ClientDto getClientByIban(String iban) {
         log.info("GetClient: Getting client by iban: {}",  iban);
        Client client = clientRepository.getClientByIban(iban);
-
+       if(client == null) {
+           log.error("GetClient: Client coming from database with iban {} is null", iban);
+           throw new ClientCannotBeNullException("Client cannot be found.");
+       }
         ClientDto clientDto = fromClientEntityToDto(client);
         log.info("GetClient: ClientDto returned successfully");
         return clientDto;
@@ -97,10 +100,7 @@ public class ClientService {
      * This is a helper method to convert ClientDto input to client data
      */
     private void fromDtoToClient(ClientDto clientDto, Client client) {
-        client.setName(client.getName());
-        client.setIban(client.getIban());
         client.getAccount(AccountType.CURRENT).setBalance(clientDto.balance());
-        client.setEmail(client.getEmail());
     }
 
     /**
