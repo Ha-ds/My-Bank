@@ -45,6 +45,7 @@ public class ClientService {
     public ClientDto getClientByIban(String iban) {
         log.info("GetClient: Getting client by iban: {}",  iban);
        Client client = clientRepository.getClientByIban(iban);
+
         ClientDto clientDto = fromClientEntityToDto(client);
         log.info("GetClient: ClientDto returned successfully");
         return clientDto;

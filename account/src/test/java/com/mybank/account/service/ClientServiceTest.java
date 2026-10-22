@@ -82,9 +82,6 @@ public class ClientServiceTest {
         // Given
         String iban = "NON_EXISTING_IBAN";
 
-        when(clientRepository.getClientByIban(iban))
-                .thenThrow(new ClientNotFoundException("Client does not exist"));
-
         // When Then
         assertThrows(ClientNotFoundException.class,
                 () -> clientService.getClientByIban(iban));
