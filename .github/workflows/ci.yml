@@ -7,6 +7,7 @@ on:
 permissions:
   contents: read
   pull-requests: read
+  checks: write
 
 jobs:
   check-source:
@@ -56,6 +57,15 @@ jobs:
           cache-dependency-path: ${{ matrix.service }}/pom.xml
       - name: Build and test
         run: mvn -B clean verify
+
+      - name: Test report
+        if: always()
+        uses: mikepenz/action-junit-report@v5
+        with:
+          report_paths: '${{ matrix.service }}/target/surefire-reports/TEST-*.xml'
+          check_name: 'Tests (${{ matrix.service }})'
+          detailed_summary: true
+          include_passed: true
 
   # Single job to mark as "required" in branch protection
   ci-result:
