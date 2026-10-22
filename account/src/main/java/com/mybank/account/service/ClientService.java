@@ -58,7 +58,7 @@ public class ClientService {
      */
     public void updateClient(ClientDto clientDto) {
 
-        if (clientDto.balance().intValue() < 0) {
+        if (clientDto.balance().signum() < 0) {
 
             log.error("Update: Client with iban {} failed to update balance with negative value", clientDto.iban());
             throw new ClientBalanceCannotBeNegativeException("Client balance cannot be negative.");
@@ -96,10 +96,10 @@ public class ClientService {
      * This is a helper method to convert ClientDto input to client data
      */
     private void fromDtoToClient(ClientDto clientDto, Client client) {
-        client.setName(clientDto.name());
-        client.setIban(clientDto.iban());
+        client.setName(client.getName());
+        client.setIban(client.getIban());
         client.getAccount(AccountType.CURRENT).setBalance(clientDto.balance());
-        client.setEmail(clientDto.email());
+        client.setEmail(client.getEmail());
     }
 
     /**
