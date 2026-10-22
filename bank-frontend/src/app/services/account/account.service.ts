@@ -1,8 +1,7 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable, inject } from '@angular/core';
-import { delay, Observable, of } from 'rxjs';
-import { ClientDto, CreateClientRequest } from '../../models/account/client.model';
-import { MOCK_CLIENTS } from '../../models/account/client.mock';
+import { Observable} from 'rxjs';
+import { AccountType, ClientDto, CreateClientRequest } from '../../models/account/client.model';
 
 @Injectable({ providedIn: 'root' })
 export class AccountService {
@@ -11,8 +10,7 @@ export class AccountService {
   private readonly baseUrl = 'http://localhost:8080/account';
 
   getAllClients(): Observable<ClientDto[]> {
-    // return this.http.get<ClientDto[]>(`${this.baseUrl}/get-all-clients`);
-    return of(MOCK_CLIENTS).pipe(delay(300));
+    return this.http.get<ClientDto[]>(`${this.baseUrl}/get-all-clients`);
   }
 
   getClientByIban(iban: string): Observable<ClientDto> {
@@ -25,5 +23,10 @@ export class AccountService {
 
   updateClient(client: ClientDto): Observable<void> {
     return this.http.put<void>(`${this.baseUrl}/update-client`, client);
+  }
+
+  createAccount(iban: string, accountType: AccountType): Observable<void> {
+    const params = new HttpParams().set('iban', iban).set('accountType', accountType);
+    return this.http.post<void>(`${this.baseUrl}/create-account`, null, { params });
   }
 }

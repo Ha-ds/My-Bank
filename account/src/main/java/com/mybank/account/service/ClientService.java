@@ -1,13 +1,18 @@
 package com.mybank.account.service;
 
 import com.mybank.account.dto.ClientDto;
+import com.mybank.account.dto.FullClientDto;
 import com.mybank.account.exception.ClientBalanceCannotBeNegativeException;
+import com.mybank.account.exception.ClientCannotBeNullException;
 import com.mybank.account.model.AccountType;
 import com.mybank.account.model.Client;
 import com.mybank.account.repository.ClientRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @Slf4j
@@ -20,8 +25,13 @@ public class ClientService {
      * This method is responsible for creating a new client within the banking system
      */
     public void createClient(Client client) {
+
+        if(client == null) {
+            log.error("Create: Client with input null failed to be created");
+            throw new ClientCannotBeNullException("Client cannot be null.");
+        }
         log.info("Create: Creating new client with id: {}", client.getClientId());
-        Client newClient = new Client(client.getClientId(), client.getName(), client.getIban(), client.getPassword());
+        Client newClient = new Client(client.getName(), client.getPassword(), client.getEmail());
         clientRepository.getClients().add(newClient);
         log.info("Create: New client created");
     }
@@ -61,6 +71,27 @@ public class ClientService {
         log.info("Client: Client updated");
     }
 
+    public List<FullClientDto> getAllClients() {
+        log.info("GetAll: Getting all clients");
+        List<Client> clients  = clientRepository.getClients();
+        List<FullClientDto> fullClientDtos = new ArrayList<>();
+
+        for(Client client : clients) {
+            fullClientDtos.add(fromClientEntityToFullClientDto(client));
+        }
+        return fullClientDtos;
+    }
+
+    private FullClientDto fromClientEntityToFullClientDto(Client client) {
+        return new FullClientDto(
+                client.getName(),
+                client.getIban(),
+                client.getAccount(AccountType.CURRENT).getBalance(),
+                client.getAccounts(),
+                client.getEmail()
+        );
+    }
+
     /**
      * This is a helper method to convert ClientDto input to client data
      */
@@ -68,6 +99,7 @@ public class ClientService {
         client.setName(clientDto.name());
         client.setIban(clientDto.iban());
         client.getAccount(AccountType.CURRENT).setBalance(clientDto.balance());
+        client.setEmail(clientDto.email());
     }
 
     /**
@@ -77,7 +109,8 @@ public class ClientService {
         return new ClientDto(
                 client.getName(),
                 client.getIban(),
-                client.getAccount(AccountType.CURRENT).getBalance()
+                client.getAccount(AccountType.CURRENT).getBalance(),
+                client.getEmail()
         );
     }
 }

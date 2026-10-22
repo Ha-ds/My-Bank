@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 public record ClientDto(
         String name,
         String iban,
-        BigDecimal balance
+        BigDecimal balance,
+        String email
 ) {
 }

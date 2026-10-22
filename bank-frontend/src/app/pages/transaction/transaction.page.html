@@ -1,0 +1,80 @@
+<section class="card">
+  <div class="card-header">
+    <h2>Transactions</h2>
+    <div class="segmented">
+      @for (m of modes; track m.value) {
+        <button type="button" [class.active]="mode() === m.value" (click)="applyMode(m.value)">
+          {{ m.label }}
+        </button>
+      }
+    </div>
+  </div>
+
+  <form [formGroup]="form" (ngSubmit)="submit()">
+    @if (mode() !== 'deposit') {
+      <label>
+        {{ mode() === 'transfer' ? 'From' : 'Client' }}
+        <select formControlName="sourceIban">
+          <option value="" disabled>{{ loadingClients() ? 'Loading…' : 'Select client' }}</option>
+          @for (c of clients(); track c.iban) {
+            <option [value]="c.iban">{{ c.name }} · {{ c.iban }} · {{ c.balance | currency: 'EUR' }}</option>
+          }
+        </select>
+      </label>
+    }
+
+    @if (mode() !== 'withdraw') {
+      <label>
+        {{ mode() === 'transfer' ? 'To' : 'Client' }}
+        <select formControlName="targetIban">
+          <option value="" disabled>{{ loadingClients() ? 'Loading…' : 'Select client' }}</option>
+          @for (c of clients(); track c.iban) {
+            <option [value]="c.iban">{{ c.name }} · {{ c.iban }}</option>
+          }
+        </select>
+      </label>
+    }
+
+    <label>
+      Amount (EUR)
+      <input formControlName="amount" type="number" min="0.01" step="0.01" />
+    </label>
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <div class="actions">
+      <button class="btn-primary" type="submit" [disabled]="submitting()">
+        {{ submitting() ? 'Processing…' : submitLabel() }}
+      </button>
+    </div>
+  </form>
+
+  @if (result(); as r) {
+    <div class="result">
+      <div class="result-header">
+        <span class="status" [class.failed]="r.transaction.transactionStatus === 'FAILED'">
+          {{ r.transaction.transactionStatus }}
+        </span>
+        <span>{{ r.transaction.amount | currency: 'EUR' }}</span>
+      </div>
+      <table>
+        @if (r.sourceClient; as s) {
+          <tr>
+            <td class="muted">From</td>
+            <td>{{ s.name }}</td>
+            <td class="right">New balance {{ s.balance | currency: 'EUR' }}</td>
+          </tr>
+        }
+        @if (r.targetClient; as t) {
+          <tr>
+            <td class="muted">To</td>
+            <td>{{ t.name }}</td>
+            <td class="right">New balance {{ t.balance | currency: 'EUR' }}</td>
+          </tr>
+        }
+      </table>
+    </div>
+  }
+</section>
