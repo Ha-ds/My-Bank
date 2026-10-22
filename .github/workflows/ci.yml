@@ -7,7 +7,6 @@ on:
 permissions:
   contents: read
   pull-requests: read
-  checks: write
 
 jobs:
   check-source:
@@ -58,14 +57,29 @@ jobs:
       - name: Build and test
         run: mvn -B clean verify
 
-      - name: Test report
+      - name: Test summary
         if: always()
-        uses: mikepenz/action-junit-report@v5
-        with:
-          report_paths: '${{ matrix.service }}/target/surefire-reports/TEST-*.xml'
-          check_name: 'Tests (${{ matrix.service }})'
-          detailed_summary: true
-          include_passed: true
+        run: |
+          python3 - <<'EOF'
+          import glob, os, xml.etree.ElementTree as ET
+          files = glob.glob("target/surefire-reports/TEST-*.xml")
+          t = f = e = s = 0
+          for p in files:
+              r = ET.parse(p).getroot()
+              t += int(r.get("tests", 0)); f += int(r.get("failures", 0))
+              e += int(r.get("errors", 0)); s += int(r.get("skipped", 0))
+          passed = t - f - e - s
+          svc = os.environ["SERVICE"]
+          out = (f"### Tests: {svc}\n\n"
+                 f"| Total | Passed | Failed | Errors | Skipped |\n|---|---|---|---|---|\n"
+                 f"| {t} | {passed} | {f} | {e} | {s} |\n")
+          if not files:
+              out = f"### Tests: {svc}\n\nNo test reports found.\n"
+          print(out)
+          open(os.environ["GITHUB_STEP_SUMMARY"], "a").write(out)
+          EOF
+        env:
+          SERVICE: ${{ matrix.service }}
 
   # Single job to mark as "required" in branch protection
   ci-result:
