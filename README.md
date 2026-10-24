@@ -1,18 +1,53 @@
-# My-Bank
-## Running the services
+# MyBank
 
-Each directory is a Spring Boot application with its own port.
+A banking application built with microservices. All services live in this single repository.
 
-| Service          | Port |
-|------------------|------|
-| account          | 8080 |
-| transaction      | 8081 |
-| reporting        | 8082 |
-| authentication   | 8083 |
-| frauddetection   | 8084 |
+## Services
 
-### Run all with the given command bellow
+| Folder | Description |
+|---|---|
+| `account` | Clients, accounts and balances |
+| `authentication` | User login and authentication |
+| `bank-frontend` | User interface |
+| `frauddetection` | Checks transactions for fraud |
+| `reporting` | Generates client reports |
+| `transaction` | Deposits, withdrawals, transfers and transaction history |
+
+## Tech stack
+
+* Java, Spring Boot, Maven
+* Node.js / npm (frontend)
+
+## Getting started
+
+Run a backend service (repeat for each one in a separate terminal):
 
 ```bash
-chmod +x run-all.sh && ./run-all.sh
+cd account
+mvn spring-boot:run
 ```
+
+Run the frontend:
+
+```bash
+cd bank-frontend
+npm install
+npm start
+```
+
+## Configuration
+
+Each backend service is configured in `src/main/resources/application.yml` (port, URLs of other services, etc.).
+
+## Running tests
+
+```bash
+cd <service-folder>
+mvn test
+```
+
+## Contributing
+
+1. Create a branch from `main`: `git checkout -b feature/<short-description>`
+2. Commit your changes with clear messages
+3. Open a pull request and request a review
